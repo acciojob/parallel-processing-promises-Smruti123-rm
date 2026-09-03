@@ -10,13 +10,13 @@ const images = [
 
 function downloadImage(url) {
   return new Promise((resolve, reject) => {
-    const img = new Image();
+    const img = document.createElement("img");
 
-    img.onload = () => {
-      resolve(img);
+    img.onload = function () {
+      resolve(url);
     };
 
-    img.onerror = () => {
+    img.onerror = function () {
       reject(`Failed to download image: ${url}`);
     };
 
@@ -29,15 +29,15 @@ function downloadImages() {
   errorDiv.textContent = "";
   output.innerHTML = "";
 
-  const imagePromises = images.map((image) =>
-    downloadImage(image.url)
-  );
+  const promises = images.map((image) => downloadImage(image.url));
 
-  Promise.all(imagePromises)
-    .then((downloadedImages) => {
+  Promise.all(promises)
+    .then((urls) => {
       loading.textContent = "";
 
-      downloadedImages.forEach((img) => {
+      urls.forEach((url) => {
+        const img = document.createElement("img");
+        img.src = url;
         output.appendChild(img);
       });
     })
